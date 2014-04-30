@@ -10,16 +10,16 @@ httpClient:
   
 database:
   # the name of your JDBC driver
-  driverClass: com.mysql.jdbc.Driver
+  driverClass: org.postgresql.Driver
 
   # the username
-  user: sceeneryadmin
+  user: postgres
 
   # the password
-  password: nothing
+  password: vegita284
 
   # the JDBC URL
-  url: jdbc:mysql://localhost:3306/agreeble
+  url: jdbc:postgresql://agreebledb.c0xzdkuqafdk.us-east-1.rds.amazonaws.com:5432/agreeble
 
   # any properties specific to your JDBC driver:
   properties:

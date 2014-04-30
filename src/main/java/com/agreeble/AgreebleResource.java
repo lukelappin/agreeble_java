@@ -1,27 +1,17 @@
 package com.agreeble;
 
 import com.agreeble.issues.dto.Issue;
-import com.agreeble.issues.dto.Issues;
-import com.agreeble.utils.Globals;
+import com.agreeble.thoughts.dao.ThoughtDAO;
+import com.agreeble.thoughts.dto.Thought;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response.Status;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-import org.skife.jdbi.v2.exceptions.DBIException;
+import com.agreeble.votes.dao.VoteDAO;
+import com.agreeble.votes.dto.Vote;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
 
-import java.io.*;
-import java.net.URLEncoder;
 import java.util.*;
 
 import org.slf4j.Logger;
@@ -33,10 +23,14 @@ import org.slf4j.LoggerFactory;
 public class AgreebleResource {
 
     private final HttpClient httpClient;
+    private final VoteDAO voatDAO;
+    private final ThoughtDAO thoughtDAO;
     private static final Logger LOG = LoggerFactory.getLogger(AgreebleResource.class);
 
-    public AgreebleResource(HttpClient httpClient) {
+    public AgreebleResource(HttpClient httpClient, VoteDAO voteDAO, ThoughtDAO thoughtDAO) {
       this.httpClient = httpClient;
+      this.voatDAO = voteDAO;
+      this.thoughtDAO = thoughtDAO;
     }
 
 
@@ -59,19 +53,42 @@ public class AgreebleResource {
     }
 
 
-    @POST
-    @Path("/agreebletest2")
-    @Consumes({MediaType.APPLICATION_JSON})
+    @GET
+    @Path("/dbtest")
     @Produces({MediaType.APPLICATION_JSON})
-    public String agreebleTest2(Issues issues) {
+    public String dbTest() {
 
 
         StringBuffer output = new StringBuffer();
 
-        for(Issue issue : issues.getIssues()){
-            output.append("ISSUE ID:" + issue.getIssue());
+        Thought thought = thoughtDAO.getIssueIdById(6);
+        output.append("THOUGHT:" + thought.getIssue_id());
 
-            for(Integer thought : issue.getThoughts()){
+        List<Vote> voteList = voatDAO.getVotesByThoughtId(6);
+
+        for(Vote v : voteList){
+            output.append("VOTE:" + v.getId());
+        }
+
+        return output.toString();
+
+    }
+
+
+
+    @POST
+    @Path("/agreebletest2")
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    public String agreebleTest2(List<Issue> issue) {
+
+
+        StringBuffer output = new StringBuffer();
+
+        for(Issue i : issue){
+            output.append("ISSUE ID:" + i.getIssue());
+
+            for(Integer thought : i.getThoughts()){
                 output.append("THOUGHT:" + thought);
             }
         }
@@ -79,7 +96,6 @@ public class AgreebleResource {
         return output.toString();
 
     }
-
 
 
 

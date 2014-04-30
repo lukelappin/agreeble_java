@@ -4,6 +4,8 @@ package com.agreeble;
 
 import com.agreeble.auth.PasswordGenerator;
 
+import com.agreeble.thoughts.dao.ThoughtDAO;
+import com.agreeble.votes.dao.VoteDAO;
 import com.yammer.dropwizard.client.HttpClientBuilder;
 import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.jdbi.DBIFactory;
@@ -38,7 +40,7 @@ public class AgreebleService extends Service<AgreebleConfiguration> {
                               Environment environment) throws ClassNotFoundException {
 
         final DBIFactory factory = new DBIFactory();
-        final DBI db = factory.build(environment, config.getDatabaseConfiguration(), "mysql");
+        final DBI db = factory.build(environment, config.getDatabaseConfiguration(), "postgres");
         //final DatabaseFactory dbfactory = new DatabaseFactory(environment);
         //final Database db = dbfactory.build(config.getDatabaseConfiguration(), "mysql");
         //final Handle h = db.open();
@@ -46,7 +48,10 @@ public class AgreebleService extends Service<AgreebleConfiguration> {
         final HttpClient httpClient = new HttpClientBuilder().using(config.getHttpClientConfiguration())
                 .build();
 
-       environment.addResource(new AgreebleResource(httpClient));
+        final VoteDAO voteDAO = db.onDemand(VoteDAO.class);
+        final ThoughtDAO thoughtDAO = db.onDemand(ThoughtDAO.class);
+
+       environment.addResource(new AgreebleResource(httpClient,voteDAO,thoughtDAO));
         
     }
 }
