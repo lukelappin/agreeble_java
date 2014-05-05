@@ -5,6 +5,7 @@ package com.agreeble;
 import com.agreeble.auth.PasswordGenerator;
 
 import com.agreeble.thoughts.dao.ThoughtDAO;
+import com.agreeble.userissueposition.dao.UserIssuePositionDAO;
 import com.agreeble.votes.dao.VoteDAO;
 import com.yammer.dropwizard.client.HttpClientBuilder;
 import com.yammer.dropwizard.config.Bootstrap;
@@ -50,8 +51,9 @@ public class AgreebleService extends Service<AgreebleConfiguration> {
 
         final VoteDAO voteDAO = db.onDemand(VoteDAO.class);
         final ThoughtDAO thoughtDAO = db.onDemand(ThoughtDAO.class);
+        final UserIssuePositionDAO userIssuePositionDAO = db.onDemand(UserIssuePositionDAO.class);
 
-       environment.addResource(new AgreebleResource(httpClient,voteDAO,thoughtDAO));
+       environment.addResource(new AgreebleResource(httpClient,voteDAO,thoughtDAO,userIssuePositionDAO));
         
     }
 }
