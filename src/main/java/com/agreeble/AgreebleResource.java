@@ -145,10 +145,11 @@ public class AgreebleResource {
                 }
 
             }
+            output.append("APS TYPE:" + apsType);
+            output.append("APS VAL:" + apsVal);
         }
 
-        output.append("APS TYPE:" + apsType);
-        output.append("APS VAL:" + apsVal);
+
         return output.toString();
 
     }
